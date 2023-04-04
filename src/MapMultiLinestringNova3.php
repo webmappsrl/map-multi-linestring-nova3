@@ -67,7 +67,7 @@ class MapMultiLinestringNova3 extends Field
     public function geojsonToGeometry($geojson)
     {
         if (!is_null($geojson) && $geojson != "null") {
-            $query = "SELECT ST_AsText(ST_LineMerge(ST_Force2D(ST_GeomFromGeoJSON('$geojson')))) As wkt";
+            $query = "SELECT ST_AsText(ST_LineMerge(ST_Force3D(ST_GeomFromGeoJSON('$geojson')))) As wkt";
             return DB::select($query)[0]->wkt;
         } else {
             return null;
