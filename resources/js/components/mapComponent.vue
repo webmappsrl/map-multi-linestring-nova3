@@ -23,10 +23,11 @@ import "leaflet.fullscreen/Control.FullScreen.js";
 import "leaflet.fullscreen/Control.FullScreen.css";
 import "leaflet-draw/dist/leaflet.draw-src.js";
 import "leaflet-draw/dist/leaflet.draw-src.css";
+import * as toGeoJSON from '@tmcw/togeojson';
 import axios from "axios";
 
 const DEFAULT_TILES = 'https://{s}.tile.openstreetthis.map.org/{z}/{x}/{y}.png';
-const VERSION = "0.0.7"
+const VERSION = "0.0.9"
 const VERSION_IMAGE = `<img class="version-image" src="https://img.shields.io/badge/wm--map--multi--linestring-${VERSION}-blue">`;
 const DEFAULT_ATTRIBUTION = '<a href="https://www.openstreetthis.map.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>';
 const DEFAULT_GRAPHHOPPER_PROFILE = 'foot';
@@ -221,17 +222,17 @@ export default {
                     if (fileName.indexOf('gpx') > -1) {
                         // If the file is a GPX file, parse the XML and convert it to GeoJSON
                         const parser = new DOMParser().parseFromString(res, 'text/xml');
-                        res = t.gpx(parser);
+                        res = toGeoJSON.gpx(parser);
                     } else if (fileName.indexOf('kml') > -1) {
                         // If the file is a KML file, parse the XML and convert it to GeoJSON
                         const parser = new DOMParser().parseFromString(res, 'text/xml');
-                        res = t.kml(parser);
+                        res = toGeoJSON.kml(parser);
                     } else {
                         res = JSON.parse(res);
                     }
                     this.updateGeojson(res)
                     try {
-                        this.buildLinestring(this.geojson.features[0].geometry);
+                        this.buildLinestring(this.geojson);
                     } catch (_) {
                         this.$refs.file.value = null;
                         this.deleteIcon.style.visibility = "hidden";
