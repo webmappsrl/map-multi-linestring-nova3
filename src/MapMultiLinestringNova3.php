@@ -48,7 +48,14 @@ class MapMultiLinestringNova3 extends Field
         $attribute
     ) {
         if ($request->exists($requestAttribute)) {
-            $model->{$attribute} = $this->geojsonToGeometry($request[$requestAttribute]);
+            $requestAttributeValue = $request[$requestAttribute];
+            $newValue = $this->geojsonToGeometry($requestAttributeValue);
+            $oldAttribute = $this->geometryToGeojson($model->{$attribute});
+            $oldValue = $this->geojsonToGeometry($oldAttribute['geojson']);
+
+            if ($newValue != $oldValue) {
+                $model->{$attribute} = $newValue;
+            }
         }
     }
 
